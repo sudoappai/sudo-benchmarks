@@ -146,6 +146,8 @@ impl SudoClient {
         while let Some(event_result) = stream.next().await {
             match event_result {
                 Ok(event) => {
+                    debug!("Received streaming event: type={}, data={}", event.event, event.data);
+                    
                     if !first_chunk_received {
                         metric.time_to_first_chunk = Some(Instant::now().duration_since(start_time));
                         first_chunk_received = true;
@@ -160,20 +162,24 @@ impl SudoClient {
                     }
 
                     if let Ok(data) = serde_json::from_str::<Value>(&event.data) {
-                        if let Some(choices) = data["choices"].as_array() {
+                        debug!("Parsed streaming data: {}", data);
+                        // Handle the actual streaming response format from Sudo API
+                        if let Some(choices) = data.get("choices").and_then(|c| c.as_array()) {
                             for choice in choices {
-                                if let Some(delta) = choice["delta"].as_object() {
-                                    if let Some(content) = delta["content"].as_str() {
+                                if let Some(delta) = choice.get("delta").and_then(|d| d.as_object()) {
+                                    if let Some(content) = delta.get("content").and_then(|c| c.as_str()) {
                                         // Rough token estimation: ~4 characters per token
                                         metric.total_tokens += (content.len() as f32 / 4.0).ceil() as u32;
                                     }
                                 }
                             }
                         }
+                    } else {
+                        debug!("Failed to parse streaming event data as JSON: {}", event.data);
                     }
                 }
                 Err(e) => {
-                    error!("Streaming error: {}", e);
+                    error!("Streaming error for model {}: {}", request.model, e);
                     break;
                 }
             }
@@ -182,12 +188,13 @@ impl SudoClient {
         metric.total_duration = Instant::now().duration_since(start_time);
 
         if metric.time_to_first_chunk.is_none() {
-            return Err(anyhow::anyhow!("No streaming chunks received"));
+            return Err(anyhow::anyhow!("No streaming chunks received for model {}. Chunk count: {}, Total duration: {:?}", request.model, metric.chunk_count, metric.total_duration));
         }
 
         Ok(metric)
     }
 
+    #[allow(dead_code)]
     pub async fn generate_image(
         &self,
         request: &ImageGenerationRequest,

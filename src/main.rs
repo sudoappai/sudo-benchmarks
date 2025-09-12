@@ -30,8 +30,8 @@ enum Commands {
         #[arg(short, long, default_value = "10")]
         concurrency: usize,
         /// Model to benchmark (if not specified, benchmarks all models)
-        #[arg(short, long)]
-        model: Option<String>,
+        #[arg(short, long, value_delimiter = ',')]
+        model: Vec<String>,
         /// Test streaming responses
         #[arg(short, long)]
         streaming: bool,
@@ -45,8 +45,8 @@ enum Commands {
         #[arg(short, long, default_value = "10")]
         concurrency: usize,
         /// Model to benchmark (if not specified, benchmarks all models)
-        #[arg(short, long)]
-        model: Option<String>,
+        #[arg(short, long, value_delimiter = ',')]
+        model: Vec<String>,
     },
     /// List all supported models
     Models,
@@ -72,7 +72,7 @@ async fn main() -> Result<()> {
         .init();
 
     // Load environment variables
-    if let Err(_) = dotenv() {
+    if dotenv().is_err() {
         info!("No .env file found, using system environment variables");
     }
 

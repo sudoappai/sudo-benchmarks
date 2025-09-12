@@ -21,7 +21,6 @@ This tool provides comprehensive performance benchmarks for the Sudo API, measur
 
 2. **Build the tool**:
    ```bash
-   cd benchmarks
    cargo build --release
    ```
 
@@ -46,7 +45,17 @@ Test streaming response latency (time to first chunk):
 
 Test specific model:
 ```bash
-./target/release/bench latency --model "gpt-4" --requests 50
+./target/release/bench latency --model "gpt-4o" --requests 50
+```
+
+Test multiple models (comma-separated):
+```bash
+./target/release/bench latency --model "gpt-4o,gpt-4o-mini" --requests 50
+```
+
+Test multiple models (multiple flags):
+```bash
+./target/release/bench latency --model "gpt-4o" --model "claude-3-5-sonnet-20241022" --requests 50
 ```
 
 ### Throughput Benchmarks
@@ -58,7 +67,12 @@ Run throughput test for 60 seconds:
 
 Test specific model throughput:
 ```bash
-./target/release/bench throughput --model "claude-3-sonnet-20241022" --duration 30
+./target/release/bench throughput --model "claude-3-5-sonnet-20241022" --duration 30
+```
+
+Test multiple models for throughput:
+```bash
+./target/release/bench throughput --model "gpt-4o,gpt-4o-mini" --duration 30
 ```
 
 ### List Available Models
@@ -71,13 +85,19 @@ Test specific model throughput:
 ### `latency` Command
 - `--requests, -r`: Number of requests to run (default: 100)
 - `--concurrency, -c`: Number of concurrent requests (default: 10) 
-- `--model, -m`: Specific model to test (optional, tests all models if not specified)
+- `--model, -m`: Models to test (optional, tests all models if not specified)
+  - Single model: `--model "gpt-4o"`
+  - Multiple models (comma-separated): `--model "gpt-4o,gpt-4o-mini"`
+  - Multiple models (multiple flags): `--model "gpt-4o" --model "claude-3-5-sonnet-20241022"`
 - `--streaming, -s`: Test streaming responses instead of regular HTTP
 
 ### `throughput` Command  
 - `--duration, -d`: Duration in seconds to run the benchmark (default: 60)
 - `--concurrency, -c`: Number of concurrent requests (default: 10)
-- `--model, -m`: Specific model to test (optional, tests subset if not specified)
+- `--model, -m`: Models to test (optional, tests subset if not specified)
+  - Single model: `--model "gpt-4o"`
+  - Multiple models (comma-separated): `--model "gpt-4o,gpt-4o-mini"`
+  - Multiple models (multiple flags): `--model "gpt-4o" --model "claude-3-5-sonnet-20241022"`
 
 ### `all` Command
 - `--latency-requests`: Number of requests for latency tests (default: 50)

@@ -15,12 +15,12 @@ pub struct BenchmarkConfig {
     pub requests: Option<usize>,
     pub concurrency: usize,
     pub duration: Option<Duration>,
-    pub model: Option<String>,
+    pub model: Vec<String>,
     pub streaming: bool,
 }
 
 impl BenchmarkConfig {
-    pub fn latency(requests: usize, concurrency: usize, model: Option<String>, streaming: bool) -> Self {
+    pub fn latency(requests: usize, concurrency: usize, model: Vec<String>, streaming: bool) -> Self {
         Self {
             requests: Some(requests),
             concurrency,
@@ -30,7 +30,7 @@ impl BenchmarkConfig {
         }
     }
 
-    pub fn throughput(duration_secs: u64, concurrency: usize, model: Option<String>) -> Self {
+    pub fn throughput(duration_secs: u64, concurrency: usize, model: Vec<String>) -> Self {
         Self {
             requests: None,
             concurrency,
@@ -76,11 +76,14 @@ impl BenchmarkRunner {
     }
 
     pub async fn run_latency_benchmark(&self, config: BenchmarkConfig) -> Result<()> {
-        let models_to_test = if let Some(model) = &config.model {
-            if !self.supported_models.contains(model) {
-                return Err(anyhow::anyhow!("Model '{}' is not supported", model));
+        let models_to_test = if !config.model.is_empty() {
+            // Validate all requested models are supported
+            for model in &config.model {
+                if !self.supported_models.contains(model) {
+                    return Err(anyhow::anyhow!("Model '{}' is not supported", model));
+                }
             }
-            vec![model.clone()]
+            config.model.clone()
         } else {
             self.supported_models.clone()
         };
@@ -174,8 +177,14 @@ impl BenchmarkRunner {
         for result in results {
             match result {
                 Ok(Ok(metric)) => collector.add_streaming_metric(metric),
-                Ok(Err(e)) => collector.add_error(e.to_string()),
-                Err(e) => collector.add_error(format!("Task error: {}", e)),
+                Ok(Err(e)) => {
+                    error!("Streaming request failed for model {}: {}", model, e);
+                    collector.add_error(e.to_string());
+                },
+                Err(e) => {
+                    error!("Task error for model {}: {}", model, e);
+                    collector.add_error(format!("Task error: {}", e));
+                },
             }
         }
 
@@ -187,11 +196,14 @@ impl BenchmarkRunner {
     }
 
     pub async fn run_throughput_benchmark(&self, config: BenchmarkConfig) -> Result<()> {
-        let models_to_test = if let Some(model) = &config.model {
-            if !self.supported_models.contains(model) {
-                return Err(anyhow::anyhow!("Model '{}' is not supported", model));
+        let models_to_test = if !config.model.is_empty() {
+            // Validate all requested models are supported
+            for model in &config.model {
+                if !self.supported_models.contains(model) {
+                    return Err(anyhow::anyhow!("Model '{}' is not supported", model));
+                }
             }
-            vec![model.clone()]
+            config.model.clone()
         } else {
             // For throughput tests, we'll test a subset of models to avoid overwhelming the API
             self.supported_models.iter().take(5).cloned().collect()
@@ -265,21 +277,21 @@ impl BenchmarkRunner {
         
         // Run latency benchmarks (regular)
         info!("📊 Running regular latency benchmarks...");
-        let latency_config = BenchmarkConfig::latency(latency_requests, concurrency, None, false);
+        let latency_config = BenchmarkConfig::latency(latency_requests, concurrency, vec![], false);
         self.run_latency_benchmark(latency_config).await?;
         
         println!("\n{}\n", "=".repeat(80));
         
         // Run streaming latency benchmarks
         info!("📡 Running streaming latency benchmarks...");
-        let streaming_config = BenchmarkConfig::latency(latency_requests, concurrency, None, true);
+        let streaming_config = BenchmarkConfig::latency(latency_requests, concurrency, vec![], true);
         self.run_latency_benchmark(streaming_config).await?;
         
         println!("\n{}\n", "=".repeat(80));
         
         // Run throughput benchmarks
         info!("⚡ Running throughput benchmarks...");
-        let throughput_config = BenchmarkConfig::throughput(throughput_duration, concurrency, None);
+        let throughput_config = BenchmarkConfig::throughput(throughput_duration, concurrency, vec![]);
         self.run_throughput_benchmark(throughput_config).await?;
 
         info!("✅ Comprehensive benchmark suite completed!");

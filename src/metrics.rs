@@ -5,7 +5,9 @@ use hdrhistogram::Histogram;
 pub struct LatencyMetric {
     pub total_duration: Duration,
     pub time_to_first_byte: Duration,
+    #[allow(dead_code)]
     pub request_size: usize,
+    #[allow(dead_code)]
     pub response_size: usize,
     pub model: String,
 }
@@ -17,6 +19,7 @@ pub struct StreamingMetric {
     pub chunk_count: u32,
     pub total_tokens: u32,
     pub model: String,
+    #[allow(dead_code)]
     pub request_size: usize,
 }
 
@@ -30,6 +33,7 @@ pub struct ThroughputMetric {
     pub model: String,
 }
 
+#[allow(dead_code)]
 #[derive(Debug)]
 pub struct LatencyStats {
     pub model: String,
@@ -45,6 +49,7 @@ pub struct LatencyStats {
     pub error_rate: f64,
 }
 
+#[allow(dead_code)]
 #[derive(Debug)]
 pub struct StreamingStats {
     pub model: String,
@@ -58,6 +63,7 @@ pub struct StreamingStats {
 
 #[derive(Debug)]
 pub struct ThroughputStats {
+    #[allow(dead_code)]
     pub model: String,
     pub test_duration: Duration,
     pub total_requests: u64,
@@ -146,7 +152,7 @@ impl MetricsCollector {
             p99_latency: Duration::from_millis(histogram.value_at_quantile(0.99)),
             mean_ttfb,
             p95_ttfb: Duration::from_millis(
-                ttfbs.iter().copied().collect::<Vec<_>>().get((ttfbs.len() * 95 / 100).min(ttfbs.len() - 1)).copied().unwrap_or(0)
+                ttfbs.to_vec().get((ttfbs.len() * 95 / 100).min(ttfbs.len() - 1)).copied().unwrap_or(0)
             ),
             error_rate: 0.0, // TODO: Track errors properly
         })
@@ -233,6 +239,7 @@ impl MetricsCollector {
         })
     }
 
+    #[allow(dead_code)]
     pub fn get_models(&self) -> Vec<String> {
         let mut models = std::collections::HashSet::new();
         

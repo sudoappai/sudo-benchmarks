@@ -7,8 +7,6 @@ pub struct ChatCompletionRequest {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub max_completion_tokens: Option<u32>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub temperature: Option<f32>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub stream: Option<bool>,
 }
 
@@ -79,6 +77,7 @@ pub struct ImageData {
 }
 
 // Streaming event structure for SSE
+#[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub struct StreamingEvent {
     pub event_type: String,
@@ -95,7 +94,6 @@ impl ChatCompletionRequest {
             }],
             model: model.to_string(),
             max_completion_tokens: Some(150),
-            temperature: Some(0.7),
             stream: if streaming { Some(true) } else { None },
         }
     }
