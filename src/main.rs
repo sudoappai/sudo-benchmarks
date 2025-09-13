@@ -32,15 +32,12 @@ enum Commands {
         /// Model to benchmark (if not specified, benchmarks all models)
         #[arg(short, long, value_delimiter = ',')]
         model: Vec<String>,
-        /// Test streaming responses
-        #[arg(short, long)]
-        streaming: bool,
+        /// Disable streaming (latency defaults to streaming)
+        #[arg(long = "streaming-off")]
+        streaming_off: bool,
     },
     /// Run throughput benchmarks
     Throughput {
-        /// Duration in seconds to run the benchmark
-        #[arg(short, long, default_value = "60")]
-        duration: u64,
         /// Number of concurrent requests
         #[arg(short, long, default_value = "10")]
         concurrency: usize,
@@ -55,9 +52,6 @@ enum Commands {
         /// Number of requests for latency tests
         #[arg(long, default_value = "50")]
         latency_requests: usize,
-        /// Duration in seconds for throughput tests
-        #[arg(long, default_value = "30")]
-        throughput_duration: u64,
         /// Number of concurrent requests
         #[arg(short, long, default_value = "5")]
         concurrency: usize,
@@ -95,17 +89,16 @@ async fn main() -> Result<()> {
             requests,
             concurrency,
             model,
-            streaming,
+            streaming_off,
         } => {
-            let config = BenchmarkConfig::latency(requests, concurrency, model, streaming);
+            let config = BenchmarkConfig::latency(requests, concurrency, model, !streaming_off);
             runner.run_latency_benchmark(config).await?;
         }
         Commands::Throughput {
-            duration,
             concurrency,
             model,
         } => {
-            let config = BenchmarkConfig::throughput(duration, concurrency, model);
+            let config = BenchmarkConfig::throughput(concurrency, model);
             runner.run_throughput_benchmark(config).await?;
         }
         Commands::Models => {
@@ -113,11 +106,10 @@ async fn main() -> Result<()> {
         }
         Commands::All {
             latency_requests,
-            throughput_duration,
             concurrency,
         } => {
             runner
-                .run_comprehensive_benchmark(latency_requests, throughput_duration, concurrency)
+                .run_comprehensive_benchmark(latency_requests, concurrency)
                 .await?;
         }
     }

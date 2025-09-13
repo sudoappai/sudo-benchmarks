@@ -124,10 +124,11 @@ impl MetricsCollector {
             .collect();
         latencies.sort();
 
-        let ttfbs: Vec<u64> = model_metrics
+        let mut ttfbs: Vec<u64> = model_metrics
             .iter()
             .map(|m| m.time_to_first_byte.as_millis() as u64)
             .collect();
+        ttfbs.sort();
 
         let mut histogram = Histogram::<u64>::new(3).unwrap();
         for &latency in &latencies {
@@ -152,7 +153,7 @@ impl MetricsCollector {
             p99_latency: Duration::from_millis(histogram.value_at_quantile(0.99)),
             mean_ttfb,
             p95_ttfb: Duration::from_millis(
-                ttfbs.to_vec().get((ttfbs.len() * 95 / 100).min(ttfbs.len() - 1)).copied().unwrap_or(0)
+                *ttfbs.get((ttfbs.len() * 95 / 100).min(ttfbs.len().saturating_sub(1))).unwrap_or(&0)
             ),
             error_rate: 0.0, // TODO: Track errors properly
         })
@@ -215,21 +216,36 @@ impl MetricsCollector {
             return None;
         }
 
-        let total_duration = model_metrics.iter().map(|m| m.duration).sum();
-        let total_requests = model_metrics.iter().map(|m| m.successful_requests + m.failed_requests).sum();
+        // For the new approach, each metric represents one request
+        let total_requests = model_metrics.len() as u64;
         let successful_requests = model_metrics.iter().map(|m| m.successful_requests).sum();
         let failed_requests = model_metrics.iter().map(|m| m.failed_requests).sum();
         
-        let mean_rps = model_metrics.iter().map(|m| m.requests_per_second).sum::<f64>() / model_metrics.len() as f64;
-        let mean_tps = model_metrics.iter().map(|m| m.tokens_per_second).sum::<f64>() / model_metrics.len() as f64;
+        // Average the TPS from successful requests only
+        let successful_metrics: Vec<_> = model_metrics.iter().filter(|m| m.successful_requests > 0).collect();
+        let mean_tps = if !successful_metrics.is_empty() {
+            successful_metrics.iter().map(|m| m.tokens_per_second).sum::<f64>() / successful_metrics.len() as f64
+        } else {
+            0.0
+        };
+
+        // For single-request tests, requests per second doesn't make as much sense
+        // But we can calculate average request duration
+        let mean_duration = if !successful_metrics.is_empty() {
+            Duration::from_nanos(
+                successful_metrics.iter().map(|m| m.duration.as_nanos() as u64).sum::<u64>() / successful_metrics.len() as u64
+            )
+        } else {
+            Duration::from_secs(0)
+        };
 
         Some(ThroughputStats {
             model: model.to_string(),
-            test_duration: total_duration,
+            test_duration: mean_duration, // Now represents average request duration
             total_requests,
             successful_requests,
             failed_requests,
-            mean_requests_per_second: mean_rps,
+            mean_requests_per_second: 0.0, // Not meaningful for single-request tests
             mean_tokens_per_second: mean_tps,
             success_rate: if total_requests > 0 { 
                 successful_requests as f64 / total_requests as f64 * 100.0 

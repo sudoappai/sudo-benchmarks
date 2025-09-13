@@ -2,7 +2,6 @@ use anyhow::Result;
 use futures::future::join_all;
 use std::collections::HashMap;
 use std::sync::Arc;
-use std::time::Duration;
 use tokio::sync::Semaphore;
 use tracing::{error, info};
 
@@ -14,7 +13,6 @@ use crate::models::ChatCompletionRequest;
 pub struct BenchmarkConfig {
     pub requests: Option<usize>,
     pub concurrency: usize,
-    pub duration: Option<Duration>,
     pub model: Vec<String>,
     pub streaming: bool,
 }
@@ -24,19 +22,17 @@ impl BenchmarkConfig {
         Self {
             requests: Some(requests),
             concurrency,
-            duration: None,
             model,
             streaming,
         }
     }
 
-    pub fn throughput(duration_secs: u64, concurrency: usize, model: Vec<String>) -> Self {
+    pub fn throughput(concurrency: usize, model: Vec<String>) -> Self {
         Self {
-            requests: None,
+            requests: Some(concurrency), // Each worker makes one request
             concurrency,
-            duration: Some(Duration::from_secs(duration_secs)),
             model,
-            streaming: false,
+            streaming: true,
         }
     }
 }
@@ -94,6 +90,8 @@ impl BenchmarkRunner {
 
         for model in models_to_test {
             info!("Testing model: {}", model);
+            // Warm up the model to avoid cold-start and connection pool effects
+            self.warm_up_model(&model, config.streaming).await;
             
             let result = if config.streaming {
                 self.run_streaming_latency_test(&model, config.requests.unwrap_or(50), config.concurrency).await
@@ -128,7 +126,7 @@ impl BenchmarkRunner {
             let task = tokio::spawn(async move {
                 let _permit = semaphore.acquire().await.unwrap();
                 
-                let request = ChatCompletionRequest::benchmark_request(&model, false);
+                let request = ChatCompletionRequest::benchmark_latency_request(&model, false);
                 client.create_chat_completion(&request).await
             });
 
@@ -165,7 +163,7 @@ impl BenchmarkRunner {
             let task = tokio::spawn(async move {
                 let _permit = semaphore.acquire().await.unwrap();
                 
-                let request = ChatCompletionRequest::benchmark_request(&model, true);
+                let request = ChatCompletionRequest::benchmark_latency_request(&model, true);
                 client.create_streaming_chat_completion(&request).await
             });
 
@@ -209,20 +207,25 @@ impl BenchmarkRunner {
             self.supported_models.iter().take(5).cloned().collect()
         };
 
-        let duration = config.duration.unwrap_or(Duration::from_secs(60));
-        info!("Running throughput benchmark for {:?} on {} models", duration, models_to_test.len());
+        let test_mode = "streaming";
+        info!("Running streaming throughput benchmark with {} concurrent requests per model on {} models", 
+              config.concurrency, models_to_test.len());
 
         let mut all_results = HashMap::new();
 
         for model in models_to_test {
-            info!("Testing throughput for model: {}", model);
+            info!("Testing {} throughput for model: {}", test_mode, model);
+            // Warm up the model to avoid cold-start and connection pool effects
+            self.warm_up_model(&model, config.streaming).await;
             
-            match self.run_throughput_test(&model, duration, config.concurrency).await {
+            let result = self.run_streaming_throughput_test(&model, config.concurrency).await;
+
+            match result {
                 Ok(stats) => {
                     all_results.insert(model.clone(), stats);
                 }
                 Err(e) => {
-                    error!("Failed to benchmark throughput for {}: {}", model, e);
+                    error!("Failed to benchmark {} throughput for {}: {}", test_mode, model, e);
                 }
             }
         }
@@ -231,12 +234,14 @@ impl BenchmarkRunner {
         Ok(())
     }
 
-    async fn run_throughput_test(&self, model: &str, duration: Duration, concurrency: usize) -> Result<ThroughputStats> {
+    async fn run_streaming_throughput_test(&self, model: &str, concurrency: usize) -> Result<ThroughputStats> {
         let semaphore = Arc::new(Semaphore::new(concurrency));
         let mut collector = MetricsCollector::new();
         let mut tasks = Vec::new();
 
-        // Run concurrent throughput tests
+        info!("Running {} concurrent single-request streaming throughput tests for model: {}", concurrency, model);
+
+        // Each worker makes exactly one streaming request to measure per-request TPS
         for _ in 0..concurrency {
             let client = Arc::clone(&self.client);
             let semaphore = Arc::clone(&semaphore);
@@ -245,8 +250,8 @@ impl BenchmarkRunner {
             let task = tokio::spawn(async move {
                 let _permit = semaphore.acquire().await.unwrap();
                 
-                let request = ChatCompletionRequest::benchmark_request(&model, false);
-                client.throughput_test(&request, duration).await
+                let request = ChatCompletionRequest::benchmark_throughput_request(&model, true);
+                client.single_request_streaming_throughput_test(&request).await
             });
 
             tasks.push(task);
@@ -263,13 +268,29 @@ impl BenchmarkRunner {
         }
 
         collector.calculate_throughput_stats(model)
-            .ok_or_else(|| anyhow::anyhow!("No successful throughput tests for model {}", model))
+            .ok_or_else(|| anyhow::anyhow!("No successful streaming throughput tests for model {}", model))
+    }
+
+    // Perform a small number of warm-up requests to prime the model and connection pool.
+    async fn warm_up_model(&self, model: &str, streaming: bool) {
+        const WARMUPS: usize = 2;
+        for _ in 0..WARMUPS {
+            let req = ChatCompletionRequest::benchmark_latency_request(model, streaming);
+            if streaming {
+                if let Err(e) = self.client.create_streaming_chat_completion(&req).await {
+                    error!("Warm-up streaming request failed for {}: {}", model, e);
+                }
+            } else {
+                if let Err(e) = self.client.create_chat_completion(&req).await.map(|_| ()) {
+                    error!("Warm-up request failed for {}: {}", model, e);
+                }
+            }
+        }
     }
 
     pub async fn run_comprehensive_benchmark(
         &self,
         latency_requests: usize,
-        throughput_duration: u64,
         concurrency: usize,
     ) -> Result<()> {
         info!("🚀 Starting comprehensive benchmark suite");
@@ -291,7 +312,7 @@ impl BenchmarkRunner {
         
         // Run throughput benchmarks
         info!("⚡ Running throughput benchmarks...");
-        let throughput_config = BenchmarkConfig::throughput(throughput_duration, concurrency, vec![]);
+        let throughput_config = BenchmarkConfig::throughput(concurrency, vec![]);
         self.run_throughput_benchmark(throughput_config).await?;
 
         info!("✅ Comprehensive benchmark suite completed!");
@@ -312,19 +333,20 @@ impl BenchmarkRunner {
     }
 
     fn print_throughput_results(&self, results: HashMap<String, ThroughputStats>) {
-        println!("\nThroughput Benchmark Results");
+        let test_type = "Streaming Throughput";
+        println!("\n{} Benchmark Results", test_type);
         println!("{}", "=".repeat(60));
 
         for (model, stats) in results {
             println!("\n🤖 Model: {}", model);
             println!("─────────────────────────────");
-            println!("Test Duration: {:?}", stats.test_duration);
-            println!("Total Requests: {}", stats.total_requests);
+            println!("Test Type: {}", test_type);
+            println!("Concurrent Requests: {}", stats.total_requests);
             println!("Successful Requests: {}", stats.successful_requests);
             println!("Failed Requests: {}", stats.failed_requests);
             println!("Success Rate: {:.1}%", stats.success_rate);
-            println!("Requests per Second: {:.2}", stats.mean_requests_per_second);
-            println!("Tokens per Second: {:.2}", stats.mean_tokens_per_second);
+            println!("Average Request Duration: {:?}", stats.test_duration);
+            println!("Average Tokens per Second (pure generation): {:.2}", stats.mean_tokens_per_second);
         }
     }
 }

@@ -7,7 +7,7 @@ use std::time::{Duration, Instant};
 use tracing::{debug, error};
 
 use crate::models::{
-    ChatCompletionRequest, ChatCompletionResponse, ImageGenerationRequest, ModelsResponse,
+    ChatCompletionRequest, ChatCompletionResponse, ImageGenerationRequest, ModelsResponse, StreamOptions,
 };
 use crate::metrics::{LatencyMetric, StreamingMetric, ThroughputMetric};
 
@@ -21,6 +21,9 @@ impl SudoClient {
     pub fn new(api_key: String, base_url: String) -> Self {
         let client = Client::builder()
             .timeout(Duration::from_secs(120))
+            // Encourage connection reuse and reduce setup overhead under concurrency
+            .pool_max_idle_per_host(32)
+            .pool_idle_timeout(Duration::from_secs(90))
             .build()
             .expect("Failed to create HTTP client");
 
@@ -108,6 +111,8 @@ impl SudoClient {
         // Create streaming request
         let mut streaming_request = request.clone();
         streaming_request.stream = Some(true);
+        // Request accurate usage reporting in the stream if supported
+        streaming_request.stream_options = Some(StreamOptions { include_usage: true });
 
         let response = self
             .client
@@ -142,6 +147,7 @@ impl SudoClient {
         futures::pin_mut!(stream);
 
         let mut first_chunk_received = false;
+        let mut usage_completion_tokens: Option<u32> = None;
 
         while let Some(event_result) = stream.next().await {
             match event_result {
@@ -174,6 +180,12 @@ impl SudoClient {
                                 }
                             }
                         }
+                        // Prefer precise usage if provided in a final event
+                        if let Some(usage) = data.get("usage").and_then(|u| u.as_object()) {
+                            if let Some(ct) = usage.get("completion_tokens").and_then(|v| v.as_u64()) {
+                                usage_completion_tokens = Some(ct as u32);
+                            }
+                        }
                     } else {
                         debug!("Failed to parse streaming event data as JSON: {}", event.data);
                     }
@@ -186,6 +198,11 @@ impl SudoClient {
         }
 
         metric.total_duration = Instant::now().duration_since(start_time);
+
+        // If the server provided exact usage, use it instead of heuristic.
+        if let Some(ct) = usage_completion_tokens {
+            metric.total_tokens = ct;
+        }
 
         if metric.time_to_first_chunk.is_none() {
             return Err(anyhow::anyhow!("No streaming chunks received for model {}. Chunk count: {}, Total duration: {:?}", request.model, metric.chunk_count, metric.total_duration));
@@ -237,40 +254,97 @@ impl SudoClient {
         Ok(metric)
     }
 
-    pub async fn throughput_test(
+    pub async fn single_request_throughput_test(
         &self,
         request: &ChatCompletionRequest,
-        duration: Duration,
     ) -> Result<ThroughputMetric> {
         let start_time = Instant::now();
-        let mut successful_requests = 0;
-        let mut failed_requests = 0;
-        let mut total_tokens = 0;
+        
+        match self.create_chat_completion(request).await {
+            Ok((response, _)) => {
+                let end_time = Instant::now();
+                let duration = end_time.duration_since(start_time);
+                
+                let tokens = if let Some(usage) = response.usage {
+                    usage.completion_tokens.unwrap_or(0) as f64
+                } else {
+                    0.0
+                };
 
-        while start_time.elapsed() < duration {
-            match self.create_chat_completion(request).await {
-                Ok((response, _)) => {
-                    successful_requests += 1;
-                    if let Some(usage) = response.usage {
-                        total_tokens += usage.completion_tokens.unwrap_or(0);
-                    }
-                }
-                Err(e) => {
-                    failed_requests += 1;
-                    debug!("Request failed: {}", e);
-                }
+                let tokens_per_second = if duration.as_secs_f64() > 0.0 {
+                    tokens / duration.as_secs_f64()
+                } else {
+                    0.0
+                };
+
+                Ok(ThroughputMetric {
+                    duration,
+                    successful_requests: 1,
+                    failed_requests: 0,
+                    tokens_per_second,
+                    requests_per_second: 1.0 / duration.as_secs_f64(),
+                    model: request.model.clone(),
+                })
+            }
+            Err(e) => {
+                let duration = Instant::now().duration_since(start_time);
+                debug!("Request failed: {}", e);
+                
+                Ok(ThroughputMetric {
+                    duration,
+                    successful_requests: 0,
+                    failed_requests: 1,
+                    tokens_per_second: 0.0,
+                    requests_per_second: 0.0,
+                    model: request.model.clone(),
+                })
             }
         }
+    }
 
-        let actual_duration = start_time.elapsed();
+    pub async fn single_request_streaming_throughput_test(
+        &self,
+        request: &ChatCompletionRequest,
+    ) -> Result<ThroughputMetric> {
+        match self.create_streaming_chat_completion(request).await {
+            Ok(streaming_metric) => {
+                // For streaming, we measure from first chunk to last chunk
+                let generation_duration = if let Some(ttfc) = streaming_metric.time_to_first_chunk {
+                    // Duration from first chunk to end of stream
+                    streaming_metric.total_duration.saturating_sub(ttfc)
+                } else {
+                    // Fallback to total duration if no first chunk timing
+                    streaming_metric.total_duration
+                };
 
-        Ok(ThroughputMetric {
-            duration: actual_duration,
-            successful_requests,
-            failed_requests,
-            tokens_per_second: total_tokens as f64 / actual_duration.as_secs_f64(),
-            requests_per_second: successful_requests as f64 / actual_duration.as_secs_f64(),
-            model: request.model.clone(),
-        })
+                let tokens_per_second = if generation_duration.as_secs_f64() > 0.0 {
+                    streaming_metric.total_tokens as f64 / generation_duration.as_secs_f64()
+                } else {
+                    0.0
+                };
+
+                Ok(ThroughputMetric {
+                    duration: generation_duration,
+                    successful_requests: 1,
+                    failed_requests: 0,
+                    tokens_per_second,
+                    // For completeness, base RPS on end-to-end duration
+                    requests_per_second: if streaming_metric.total_duration.as_secs_f64() > 0.0 { 1.0 / streaming_metric.total_duration.as_secs_f64() } else { 0.0 },
+                    model: request.model.clone(),
+                })
+            }
+            Err(e) => {
+                debug!("Streaming request failed: {}", e);
+                
+                Ok(ThroughputMetric {
+                    duration: Duration::from_secs(0),
+                    successful_requests: 0,
+                    failed_requests: 1,
+                    tokens_per_second: 0.0,
+                    requests_per_second: 0.0,
+                    model: request.model.clone(),
+                })
+            }
+        }
     }
 }

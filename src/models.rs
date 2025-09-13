@@ -8,6 +8,8 @@ pub struct ChatCompletionRequest {
     pub max_completion_tokens: Option<u32>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub stream: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub stream_options: Option<StreamOptions>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -24,6 +26,11 @@ pub struct ChatCompletionResponse {
     pub model: String,
     pub choices: Vec<Choice>,
     pub usage: Option<Usage>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct StreamOptions {
+    pub include_usage: bool,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -95,6 +102,7 @@ impl ChatCompletionRequest {
             model: model.to_string(),
             max_completion_tokens: Some(150),
             stream: if streaming { Some(true) } else { None },
+            stream_options: None,
         }
     }
 
@@ -104,5 +112,19 @@ impl ChatCompletionRequest {
             "Write a short paragraph about the benefits of API performance benchmarking.",
             streaming,
         )
+    }
+
+    // For latency, minimize generated tokens to reduce tail time and highlight TTFT.
+    pub fn benchmark_latency_request(model: &str, streaming: bool) -> Self {
+        let mut req = Self::benchmark_request(model, streaming);
+        req.max_completion_tokens = Some(8);
+        req
+    }
+
+    // For throughput (tokens/sec), allow larger generations to amortize overhead.
+    pub fn benchmark_throughput_request(model: &str, streaming: bool) -> Self {
+        let mut req = Self::benchmark_request(model, streaming);
+        req.max_completion_tokens = Some(512);
+        req
     }
 }

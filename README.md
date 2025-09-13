@@ -10,6 +10,9 @@ This tool provides comprehensive performance benchmarks for the Sudo API, measur
 - **Concurrent Testing**: Run multiple requests in parallel to simulate real-world usage
 - **Multi-Model Support**: Test all supported models or focus on specific ones
 - **Detailed Metrics**: P50, P95, P99 latencies, error rates, and more
+- **Warm Ups**: Automatic per-model warm-up requests to avoid cold-start bias
+- **Optimized Requests**: Smaller generations for latency; larger generations for throughput
+ - **Accurate Streaming Tokens**: Requests include `stream_options: { include_usage: true }` and use exact `completion_tokens` from the stream when available
 
 ## Setup
 
@@ -31,16 +34,16 @@ This tool provides comprehensive performance benchmarks for the Sudo API, measur
 ./target/release/bench all
 ```
 
-### Latency Benchmarks
+### Latency Benchmarks (streaming by default)
 
 Test regular HTTP response latency:
 ```bash
 ./target/release/bench latency --requests 100 --concurrency 10
 ```
 
-Test streaming response latency (time to first chunk):
+Streaming response latency (time to first chunk) [default]:
 ```bash
-./target/release/bench latency --requests 50 --concurrency 5 --streaming
+./target/release/bench latency --requests 50 --concurrency 5
 ```
 
 Test specific model:
@@ -58,27 +61,55 @@ Test multiple models (multiple flags):
 ./target/release/bench latency --model "gpt-4o" --model "claude-3-5-sonnet-20241022" --requests 50
 ```
 
-### Throughput Benchmarks
+### Throughput Benchmarks (always streaming)
 
-Run throughput test for 60 seconds:
+Throughput tests measure per-request token generation rates by running concurrent single streaming requests, providing accurate TPS measurements based on pure generation time (first chunk → last chunk).
+ 
 ```bash
-./target/release/bench throughput --duration 60 --concurrency 10
+./target/release/bench throughput --concurrency 10
 ```
 
 Test specific model throughput:
 ```bash
-./target/release/bench throughput --model "claude-3-5-sonnet-20241022" --duration 30
+./target/release/bench throughput --model "gpt-4o" --concurrency 5
 ```
 
-Test multiple models for throughput:
+Test multiple models:
 ```bash
-./target/release/bench throughput --model "gpt-4o,gpt-4o-mini" --duration 30
+./target/release/bench throughput --model "gpt-4o,grok-3" --concurrency 5
 ```
+
+Note: Throughput is always streaming; there is no non-streaming throughput mode.
+
+## What’s New / Methodology Updates
+
+- Warm-ups: Each model’s benchmark run starts with 2 warm-up requests to reduce cold-start and connection setup variance, improving steady-state performance measurement.
+- Tailored request sizes:
+  - Latency tests cap `max_completion_tokens` at 8 to emphasize TTFB and minimize generation tail.
+  - Throughput tests use `max_completion_tokens` of 512 to better measure tokens/sec by amortizing overhead.
+- Streaming token accuracy: When present, `usage.completion_tokens` reported by the server in streaming responses is used for exact token counts; otherwise, a character-based heuristic is applied.
+- Percentiles: P95 TTFB is computed on a sorted sample set; latency percentiles use `hdrhistogram` for accuracy.
+- HTTP client tuning: Increased idle pool capacity and timeout for better connection reuse under concurrency.
 
 ### List Available Models
 ```bash
 ./target/release/bench models
 ```
+
+## Batch Script
+
+Run both latency (streaming by default) and throughput (always streaming) for a predefined list of models and save results to timestamped logs under `./results`:
+
+```bash
+bash scripts/run_benchmarks.sh
+```
+
+Environment overrides:
+- `LATENCY_REQUESTS` (default: `100`)
+- `LATENCY_CONCURRENCY` (default: `10`)
+- `THROUGHPUT_CONCURRENCY` (default: `10`)
+- `RESULTS_DIR` (default: `./results`)
+- `MODELS_CSV` (default: your curated list from the script)
 
 ## Command Reference
 
@@ -89,20 +120,19 @@ Test multiple models for throughput:
   - Single model: `--model "gpt-4o"`
   - Multiple models (comma-separated): `--model "gpt-4o,gpt-4o-mini"`
   - Multiple models (multiple flags): `--model "gpt-4o" --model "claude-3-5-sonnet-20241022"`
-- `--streaming, -s`: Test streaming responses instead of regular HTTP
+- `--streaming-off`: Disable streaming (latency defaults to streaming)
 
-### `throughput` Command  
-- `--duration, -d`: Duration in seconds to run the benchmark (default: 60)
-- `--concurrency, -c`: Number of concurrent requests (default: 10)
+### `throughput` Command (always streaming)
+ - `--concurrency, -c`: Number of concurrent single streaming requests to run (default: 10)
 - `--model, -m`: Models to test (optional, tests subset if not specified)
   - Single model: `--model "gpt-4o"`
   - Multiple models (comma-separated): `--model "gpt-4o,gpt-4o-mini"`
   - Multiple models (multiple flags): `--model "gpt-4o" --model "claude-3-5-sonnet-20241022"`
+- `--streaming, -s`: Test streaming throughput (measures pure token generation speed)
 
 ### `all` Command
-- `--latency-requests`: Number of requests for latency tests (default: 50)
-- `--throughput-duration`: Duration in seconds for throughput tests (default: 30)
-- `--concurrency, -c`: Number of concurrent requests (default: 5)
+ - `--latency-requests`: Number of requests for latency tests (default: 50)
+ - `--concurrency, -c`: Number of concurrent requests (default: 5)
 
 ## Metrics Explained
 
@@ -114,18 +144,21 @@ Test multiple models for throughput:
 
 ### Streaming Metrics  
 - **Time to First Chunk**: Time until first SSE chunk received (critical for perceived responsiveness)
-- **Tokens per Second**: Rate of token generation during streaming
+- **Tokens per Second**: Rate of token generation during streaming; uses exact `usage.completion_tokens` when provided via `stream_options.include_usage=true`, otherwise a heuristic (~4 chars/token)
 - **Chunk Count**: Number of streaming chunks received
 - **Total Duration**: Complete streaming session time
 
 ### Throughput Metrics
-- **Requests per Second**: Sustainable request rate
-- **Tokens per Second**: Token generation rate across all requests
+- **Average Tokens per Second**: Average token generation rate across concurrent requests
+  - **Regular throughput**: End-to-end timing (includes network latency and processing)
+  - **Streaming throughput**: Pure generation timing (from first chunk to last chunk)
+- **Average Request Duration**: Mean time per request
 - **Success Rate**: Percentage of successful requests
-- **Error Rate**: Percentage of failed requests
+- **Concurrent Requests**: Number of simultaneous requests executed
 
 ## Sample Output
 
+### Latency Benchmark
 ```
 Regular Latency Benchmark Results
 =================================================================
@@ -147,6 +180,38 @@ LatencyStats {
 }
 ```
 
+### Throughput Benchmark
+```
+Regular Throughput Benchmark Results
+============================================================
+
+🤖 Model: gpt-4o
+─────────────────────────────
+Test Type: Regular Throughput
+Concurrent Requests: 5
+Successful Requests: 5
+Failed Requests: 0
+Success Rate: 100.0%
+Average Request Duration: 4.205309141s
+Average Tokens per Second (end-to-end): 32.37
+```
+
+### Streaming Throughput Benchmark
+```
+Streaming Throughput Benchmark Results
+============================================================
+
+🤖 Model: gpt-4o
+─────────────────────────────
+Test Type: Streaming Throughput
+Concurrent Requests: 5
+Successful Requests: 5
+Failed Requests: 0
+Success Rate: 100.0%
+Average Request Duration: 2.1385482s
+Average Tokens per Second (pure generation): 116.09
+```
+
 ## Best Practices
 
 1. **Start Small**: Begin with lower request counts and concurrency to avoid rate limiting
@@ -154,6 +219,10 @@ LatencyStats {
 3. **Multiple Runs**: Run benchmarks multiple times to account for network variability
 4. **Model Selection**: Test your most important models first, then expand to others
 5. **Production Testing**: Use the production API URL for realistic benchmarks
+6. **Interpreting Results**:
+   - For fastest perceived responsiveness, prefer streaming latency results (TTFC) with small token caps (built-in default).
+   - For raw generation speed, use streaming throughput (first chunk → last chunk) with larger token budgets; throughput is always streaming.
+   - Avoid overshooting concurrency that could trigger rate limits or queuing.
 
 ## Troubleshooting
 
