@@ -34,7 +34,7 @@ fi
 export SUDO_API_BASE_URL=${SUDO_API_BASE_URL:-https://sudoapp.dev/api}
 
 # Models list (CSV)
-MODELS_CSV=${MODELS_CSV:-"gpt-4o,gpt-4o-mini,gpt-5-nano,o3,claude-3-7-sonnet-20250219,claude-sonnet-4-20250514,claude-3-haiku-20240307,grok-3,grok-4-0709,gemini-2.5-flash,gemini-2.0-flash,gemini-2.0-flash-lite,deepseek-chat"}
+MODELS_CSV=${MODELS_CSV:-"gemini-2.5-pro"}
 
 echo "== Building bench binary =="
 (cd "$REPO_ROOT" && cargo build --release)

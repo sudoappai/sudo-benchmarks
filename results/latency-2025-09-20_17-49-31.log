@@ -1,0 +1,138 @@
+[2m2025-09-21T00:49:31.621873Z[0m [32m INFO[0m [2mbench[0m[2m:[0m Using API base URL: https://sudoapp.dev/api
+[2m2025-09-21T00:49:32.192908Z[0m [32m INFO[0m [2mbench::benchmarks[0m[2m:[0m Loaded 93 supported models
+[2m2025-09-21T00:49:32.192937Z[0m [32m INFO[0m [2mbench::benchmarks[0m[2m:[0m Running latency benchmark on 12 models
+[2m2025-09-21T00:49:32.192977Z[0m [32m INFO[0m [2mbench::benchmarks[0m[2m:[0m Testing model: gpt-4-turbo
+[2m2025-09-21T00:49:36.640979Z[0m [32m INFO[0m [2mbench::benchmarks[0m[2m:[0m Testing model: gpt-5
+[2m2025-09-21T00:49:40.559838Z[0m [32m INFO[0m [2mbench::benchmarks[0m[2m:[0m Testing model: gpt-5-mini
+[2m2025-09-21T00:49:43.741797Z[0m [32m INFO[0m [2mbench::benchmarks[0m[2m:[0m Testing model: gpt-5-nano
+[2m2025-09-21T00:49:46.675104Z[0m [32m INFO[0m [2mbench::benchmarks[0m[2m:[0m Testing model: grok-3-mini
+[2m2025-09-21T00:49:48.248987Z[0m [32m INFO[0m [2mbench::benchmarks[0m[2m:[0m Testing model: grok-4-0709
+[2m2025-09-21T00:49:50.944551Z[0m [32m INFO[0m [2mbench::benchmarks[0m[2m:[0m Testing model: o1
+[2m2025-09-21T00:49:54.188796Z[0m [32m INFO[0m [2mbench::benchmarks[0m[2m:[0m Testing model: o3-mini
+[2m2025-09-21T00:49:57.112981Z[0m [32m INFO[0m [2mbench::benchmarks[0m[2m:[0m Testing model: o4-mini
+[2m2025-09-21T00:49:59.249258Z[0m [32m INFO[0m [2mbench::benchmarks[0m[2m:[0m Testing model: claude-opus-4-1-20250805
+[2m2025-09-21T00:50:14.123396Z[0m [32m INFO[0m [2mbench::benchmarks[0m[2m:[0m Testing model: gemini-2.5-flash
+[2m2025-09-21T00:50:15.693640Z[0m [32m INFO[0m [2mbench::benchmarks[0m[2m:[0m Testing model: gemini-2.5-pro
+
+Streaming Latency Benchmark Results
+============================================================
+
+🤖 Model: o4-mini
+─────────────────────────────
+StreamingStats {
+    model: "o4-mini",
+    request_count: 10,
+    mean_time_to_first_chunk: 765.105191ms,
+    p95_time_to_first_chunk: 987.474583ms,
+    total_chunks: 40,
+}
+
+🤖 Model: gpt-5-mini
+─────────────────────────────
+StreamingStats {
+    model: "gpt-5-mini",
+    request_count: 10,
+    mean_time_to_first_chunk: 920.503862ms,
+    p95_time_to_first_chunk: 1.379326833s,
+    total_chunks: 40,
+}
+
+🤖 Model: gpt-4-turbo
+─────────────────────────────
+StreamingStats {
+    model: "gpt-4-turbo",
+    request_count: 10,
+    mean_time_to_first_chunk: 1.187206987s,
+    p95_time_to_first_chunk: 2.376591125s,
+    total_chunks: 120,
+}
+
+🤖 Model: gpt-5
+─────────────────────────────
+StreamingStats {
+    model: "gpt-5",
+    request_count: 10,
+    mean_time_to_first_chunk: 900.967066ms,
+    p95_time_to_first_chunk: 1.1494885s,
+    total_chunks: 40,
+}
+
+🤖 Model: gpt-5-nano
+─────────────────────────────
+StreamingStats {
+    model: "gpt-5-nano",
+    request_count: 10,
+    mean_time_to_first_chunk: 700.612029ms,
+    p95_time_to_first_chunk: 999.318ms,
+    total_chunks: 40,
+}
+
+🤖 Model: grok-4-0709
+─────────────────────────────
+StreamingStats {
+    model: "grok-4-0709",
+    request_count: 10,
+    mean_time_to_first_chunk: 802.254812ms,
+    p95_time_to_first_chunk: 849.383209ms,
+    total_chunks: 100,
+}
+
+🤖 Model: grok-3-mini
+─────────────────────────────
+StreamingStats {
+    model: "grok-3-mini",
+    request_count: 10,
+    mean_time_to_first_chunk: 377.011733ms,
+    p95_time_to_first_chunk: 581.352209ms,
+    total_chunks: 100,
+}
+
+🤖 Model: claude-opus-4-1-20250805
+─────────────────────────────
+StreamingStats {
+    model: "claude-opus-4-1-20250805",
+    request_count: 10,
+    mean_time_to_first_chunk: 3.761979404s,
+    p95_time_to_first_chunk: 6.526605709s,
+    total_chunks: 50,
+}
+
+🤖 Model: o3-mini
+─────────────────────────────
+StreamingStats {
+    model: "o3-mini",
+    request_count: 10,
+    mean_time_to_first_chunk: 700.449187ms,
+    p95_time_to_first_chunk: 1.077687084s,
+    total_chunks: 40,
+}
+
+🤖 Model: gemini-2.5-flash
+─────────────────────────────
+StreamingStats {
+    model: "gemini-2.5-flash",
+    request_count: 10,
+    mean_time_to_first_chunk: 521.986674ms,
+    p95_time_to_first_chunk: 619.333416ms,
+    total_chunks: 10,
+}
+
+🤖 Model: o1
+─────────────────────────────
+StreamingStats {
+    model: "o1",
+    request_count: 10,
+    mean_time_to_first_chunk: 836.596204ms,
+    p95_time_to_first_chunk: 1.105572875s,
+    total_chunks: 40,
+}
+
+🤖 Model: gemini-2.5-pro
+─────────────────────────────
+StreamingStats {
+    model: "gemini-2.5-pro",
+    request_count: 10,
+    mean_time_to_first_chunk: 4.037964716s,
+    p95_time_to_first_chunk: 4.982257667s,
+    total_chunks: 20,
+}

@@ -9,7 +9,7 @@ This tool provides comprehensive performance benchmarks for the Sudo API, measur
 - **Throughput Benchmarks**: Measure tokens per second and requests per second
 - **Concurrent Testing**: Run multiple requests in parallel to simulate real-world usage
 - **Multi-Model Support**: Test all supported models or focus on specific ones
-- **Detailed Metrics**: P50, P95, P99 latencies, error rates, and more
+- **Detailed Metrics**: P50, P95, P99 latencies, and more
 - **Warm Ups**: Automatic per-model warm-up requests to avoid cold-start bias
 - **Optimized Requests**: Smaller generations for latency; larger generations for throughput
  - **Accurate Streaming Tokens**: Requests include `stream_options: { include_usage: true }` and use exact `completion_tokens` from the stream when available
@@ -144,7 +144,6 @@ Environment overrides:
 
 ### Streaming Metrics  
 - **Time to First Chunk**: Time until first SSE chunk received (critical for perceived responsiveness)
-- **Tokens per Second**: Rate of token generation during streaming; uses exact `usage.completion_tokens` when provided via `stream_options.include_usage=true`, otherwise a heuristic (~4 chars/token)
 - **Chunk Count**: Number of streaming chunks received
 - **Total Duration**: Complete streaming session time
 
@@ -176,7 +175,6 @@ LatencyStats {
     p99_latency: 3102ms,
     mean_ttfb: 234ms,
     p95_ttfb: 456ms,
-    error_rate: 0.0,
 }
 ```
 

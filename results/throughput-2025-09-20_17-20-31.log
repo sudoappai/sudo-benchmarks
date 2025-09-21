@@ -1,0 +1,214 @@
+[2m2025-09-21T00:27:17.301594Z[0m [32m INFO[0m [2mbench[0m[2m:[0m Using API base URL: https://sudoapp.dev/api
+[2m2025-09-21T00:27:17.444413Z[0m [32m INFO[0m [2mbench::benchmarks[0m[2m:[0m Loaded 93 supported models
+[2m2025-09-21T00:27:17.444431Z[0m [32m INFO[0m [2mbench::benchmarks[0m[2m:[0m Running streaming throughput benchmark with 10 concurrent requests per model on 17 models
+[2m2025-09-21T00:27:17.444434Z[0m [32m INFO[0m [2mbench::benchmarks[0m[2m:[0m Testing streaming throughput for model: chatgpt-4o-latest
+[2m2025-09-21T00:27:18.651049Z[0m [32m INFO[0m [2mbench::benchmarks[0m[2m:[0m Running 10 concurrent single-request streaming throughput tests for model: chatgpt-4o-latest
+[2m2025-09-21T00:27:21.142296Z[0m [32m INFO[0m [2mbench::benchmarks[0m[2m:[0m Testing streaming throughput for model: claude-3-5-haiku-20241022
+[2m2025-09-21T00:27:23.134936Z[0m [32m INFO[0m [2mbench::benchmarks[0m[2m:[0m Running 10 concurrent single-request streaming throughput tests for model: claude-3-5-haiku-20241022
+[2m2025-09-21T00:27:26.819925Z[0m [32m INFO[0m [2mbench::benchmarks[0m[2m:[0m Testing streaming throughput for model: claude-opus-4-1-20250805
+[2m2025-09-21T00:27:43.297611Z[0m [32m INFO[0m [2mbench::benchmarks[0m[2m:[0m Running 10 concurrent single-request streaming throughput tests for model: claude-opus-4-1-20250805
+[2m2025-09-21T00:29:10.063898Z[0m [32m INFO[0m [2mbench::benchmarks[0m[2m:[0m Testing streaming throughput for model: claude-opus-4-20250514
+[2m2025-09-21T00:29:13.358201Z[0m [32m INFO[0m [2mbench::benchmarks[0m[2m:[0m Running 10 concurrent single-request streaming throughput tests for model: claude-opus-4-20250514
+[2m2025-09-21T00:29:19.815116Z[0m [32m INFO[0m [2mbench::benchmarks[0m[2m:[0m Testing streaming throughput for model: deepseek-reasoner
+[2m2025-09-21T00:29:44.050260Z[0m [32m INFO[0m [2mbench::benchmarks[0m[2m:[0m Running 10 concurrent single-request streaming throughput tests for model: deepseek-reasoner
+[2m2025-09-21T00:29:58.827327Z[0m [32m INFO[0m [2mbench::benchmarks[0m[2m:[0m Testing streaming throughput for model: gemini-2.5-flash-lite
+[2m2025-09-21T00:29:59.677852Z[0m [32m INFO[0m [2mbench::benchmarks[0m[2m:[0m Running 10 concurrent single-request streaming throughput tests for model: gemini-2.5-flash-lite
+[2m2025-09-21T00:30:00.390121Z[0m [32m INFO[0m [2mbench::benchmarks[0m[2m:[0m Testing streaming throughput for model: gemini-2.5-flash
+[2m2025-09-21T00:30:01.218775Z[0m [32m INFO[0m [2mbench::benchmarks[0m[2m:[0m Running 10 concurrent single-request streaming throughput tests for model: gemini-2.5-flash
+[2m2025-09-21T00:30:04.494627Z[0m [32m INFO[0m [2mbench::benchmarks[0m[2m:[0m Testing streaming throughput for model: gemini-2.5-pro
+[2m2025-09-21T00:30:06.891910Z[0m [32m INFO[0m [2mbench::benchmarks[0m[2m:[0m Running 10 concurrent single-request streaming throughput tests for model: gemini-2.5-pro
+[2m2025-09-21T00:30:16.526533Z[0m [32m INFO[0m [2mbench::benchmarks[0m[2m:[0m Testing streaming throughput for model: gpt-3.5-turbo
+[2m2025-09-21T00:30:18.238806Z[0m [32m INFO[0m [2mbench::benchmarks[0m[2m:[0m Running 10 concurrent single-request streaming throughput tests for model: gpt-3.5-turbo
+[2m2025-09-21T00:30:19.935806Z[0m [32m INFO[0m [2mbench::benchmarks[0m[2m:[0m Testing streaming throughput for model: gpt-4
+[2m2025-09-21T00:30:22.350535Z[0m [32m INFO[0m [2mbench::benchmarks[0m[2m:[0m Running 10 concurrent single-request streaming throughput tests for model: gpt-4
+[2m2025-09-21T00:30:27.263733Z[0m [32m INFO[0m [2mbench::benchmarks[0m[2m:[0m Testing streaming throughput for model: gpt-4.1
+[2m2025-09-21T00:30:28.537605Z[0m [32m INFO[0m [2mbench::benchmarks[0m[2m:[0m Running 10 concurrent single-request streaming throughput tests for model: gpt-4.1
+[2m2025-09-21T00:30:31.326170Z[0m [32m INFO[0m [2mbench::benchmarks[0m[2m:[0m Testing streaming throughput for model: gpt-4.1-mini
+[2m2025-09-21T00:30:32.568360Z[0m [32m INFO[0m [2mbench::benchmarks[0m[2m:[0m Running 10 concurrent single-request streaming throughput tests for model: gpt-4.1-mini
+[2m2025-09-21T00:30:34.586760Z[0m [32m INFO[0m [2mbench::benchmarks[0m[2m:[0m Testing streaming throughput for model: gpt-4.1-nano
+[2m2025-09-21T00:30:35.505294Z[0m [32m INFO[0m [2mbench::benchmarks[0m[2m:[0m Running 10 concurrent single-request streaming throughput tests for model: gpt-4.1-nano
+[2m2025-09-21T00:30:36.805135Z[0m [32m INFO[0m [2mbench::benchmarks[0m[2m:[0m Testing streaming throughput for model: gpt-4o-audio-preview
+[2m2025-09-21T00:30:37.083060Z[0m [31mERROR[0m [2mbench::benchmarks[0m[2m:[0m Warm-up streaming request failed for gpt-4o-audio-preview: Streaming chat completion failed: 400 Bad Request - {"error":{"message":"Error from OpenAI API: {\n  \"error\": {\n    \"message\": \"This model requires that either input content or output modality contain audio.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": \"model\",\n    \"code\": \"invalid_value\"\n  }\n}","type":"api_error"}}
+[2m2025-09-21T00:30:37.408665Z[0m [31mERROR[0m [2mbench::benchmarks[0m[2m:[0m Warm-up streaming request failed for gpt-4o-audio-preview: Streaming chat completion failed: 400 Bad Request - {"error":{"message":"Error from OpenAI API: {\n  \"error\": {\n    \"message\": \"This model requires that either input content or output modality contain audio.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": \"model\",\n    \"code\": \"invalid_value\"\n  }\n}","type":"api_error"}}
+[2m2025-09-21T00:30:37.408694Z[0m [32m INFO[0m [2mbench::benchmarks[0m[2m:[0m Running 10 concurrent single-request streaming throughput tests for model: gpt-4o-audio-preview
+[2m2025-09-21T00:30:37.722670Z[0m [32m INFO[0m [2mbench::benchmarks[0m[2m:[0m Testing streaming throughput for model: gpt-4o-mini-audio-preview
+[2m2025-09-21T00:30:37.995686Z[0m [31mERROR[0m [2mbench::benchmarks[0m[2m:[0m Warm-up streaming request failed for gpt-4o-mini-audio-preview: Streaming chat completion failed: 400 Bad Request - {"error":{"message":"Error from OpenAI API: {\n  \"error\": {\n    \"message\": \"This model requires that either input content or output modality contain audio.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": \"model\",\n    \"code\": \"invalid_value\"\n  }\n}","type":"api_error"}}
+[2m2025-09-21T00:30:38.271870Z[0m [31mERROR[0m [2mbench::benchmarks[0m[2m:[0m Warm-up streaming request failed for gpt-4o-mini-audio-preview: Streaming chat completion failed: 400 Bad Request - {"error":{"message":"Error from OpenAI API: {\n  \"error\": {\n    \"message\": \"This model requires that either input content or output modality contain audio.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": \"model\",\n    \"code\": \"invalid_value\"\n  }\n}","type":"api_error"}}
+[2m2025-09-21T00:30:38.271912Z[0m [32m INFO[0m [2mbench::benchmarks[0m[2m:[0m Running 10 concurrent single-request streaming throughput tests for model: gpt-4o-mini-audio-preview
+[2m2025-09-21T00:30:38.559980Z[0m [32m INFO[0m [2mbench::benchmarks[0m[2m:[0m Testing streaming throughput for model: gpt-4o-mini-search-preview
+[2m2025-09-21T00:30:43.720510Z[0m [32m INFO[0m [2mbench::benchmarks[0m[2m:[0m Running 10 concurrent single-request streaming throughput tests for model: gpt-4o-mini-search-preview
+[2m2025-09-21T00:30:48.146147Z[0m [32m INFO[0m [2mbench::benchmarks[0m[2m:[0m Testing streaming throughput for model: gpt-4o-search-preview
+[2m2025-09-21T00:30:57.496314Z[0m [32m INFO[0m [2mbench::benchmarks[0m[2m:[0m Running 10 concurrent single-request streaming throughput tests for model: gpt-4o-search-preview
+
+Streaming Throughput Benchmark Results
+============================================================
+
+🤖 Model: chatgpt-4o-latest
+─────────────────────────────
+Test Type: Streaming Throughput
+Concurrent Requests: 10
+Successful Requests: 10
+Failed Requests: 0
+Success Rate: 100.0%
+Average Request Duration: 1.028126695s
+Average Tokens per Second (pure generation): 101.30
+
+🤖 Model: gemini-2.5-flash
+─────────────────────────────
+Test Type: Streaming Throughput
+Concurrent Requests: 10
+Successful Requests: 10
+Failed Requests: 0
+Success Rate: 100.0%
+Average Request Duration: 341ns
+Average Tokens per Second (pure generation): 0.00
+
+🤖 Model: claude-3-5-haiku-20241022
+─────────────────────────────
+Test Type: Streaming Throughput
+Concurrent Requests: 10
+Successful Requests: 10
+Failed Requests: 0
+Success Rate: 100.0%
+Average Request Duration: 2.827955691s
+Average Tokens per Second (pure generation): 47.44
+
+🤖 Model: gemini-2.5-pro
+─────────────────────────────
+Test Type: Streaming Throughput
+Concurrent Requests: 10
+Successful Requests: 10
+Failed Requests: 0
+Success Rate: 100.0%
+Average Request Duration: 1.139767695s
+Average Tokens per Second (pure generation): 16.64
+
+🤖 Model: claude-opus-4-1-20250805
+─────────────────────────────
+Test Type: Streaming Throughput
+Concurrent Requests: 10
+Successful Requests: 10
+Failed Requests: 0
+Success Rate: 100.0%
+Average Request Duration: 2.46907557s
+Average Tokens per Second (pure generation): 40.41
+
+🤖 Model: gpt-4.1-mini
+─────────────────────────────
+Test Type: Streaming Throughput
+Concurrent Requests: 10
+Successful Requests: 10
+Failed Requests: 0
+Success Rate: 100.0%
+Average Request Duration: 1.171475504s
+Average Tokens per Second (pure generation): 79.41
+
+🤖 Model: gpt-4o-search-preview
+─────────────────────────────
+Test Type: Streaming Throughput
+Concurrent Requests: 10
+Successful Requests: 10
+Failed Requests: 0
+Success Rate: 100.0%
+Average Request Duration: 1.67182242s
+Average Tokens per Second (pure generation): 160.93
+
+🤖 Model: deepseek-reasoner
+─────────────────────────────
+Test Type: Streaming Throughput
+Concurrent Requests: 10
+Successful Requests: 10
+Failed Requests: 0
+Success Rate: 100.0%
+Average Request Duration: 10.972217916s
+Average Tokens per Second (pure generation): 19.90
+
+🤖 Model: gpt-4.1-nano
+─────────────────────────────
+Test Type: Streaming Throughput
+Concurrent Requests: 10
+Successful Requests: 10
+Failed Requests: 0
+Success Rate: 100.0%
+Average Request Duration: 741.56325ms
+Average Tokens per Second (pure generation): 114.24
+
+🤖 Model: claude-opus-4-20250514
+─────────────────────────────
+Test Type: Streaming Throughput
+Concurrent Requests: 10
+Successful Requests: 10
+Failed Requests: 0
+Success Rate: 100.0%
+Average Request Duration: 3.875479266s
+Average Tokens per Second (pure generation): 38.63
+
+🤖 Model: gpt-4o-mini-audio-preview
+─────────────────────────────
+Test Type: Streaming Throughput
+Concurrent Requests: 10
+Successful Requests: 0
+Failed Requests: 10
+Success Rate: 0.0%
+Average Request Duration: 0ns
+Average Tokens per Second (pure generation): 0.00
+
+🤖 Model: gpt-4o-mini-search-preview
+─────────────────────────────
+Test Type: Streaming Throughput
+Concurrent Requests: 10
+Successful Requests: 10
+Failed Requests: 0
+Success Rate: 100.0%
+Average Request Duration: 1.381905645s
+Average Tokens per Second (pure generation): 196.92
+
+🤖 Model: gpt-4o-audio-preview
+─────────────────────────────
+Test Type: Streaming Throughput
+Concurrent Requests: 10
+Successful Requests: 0
+Failed Requests: 10
+Success Rate: 0.0%
+Average Request Duration: 0ns
+Average Tokens per Second (pure generation): 0.00
+
+🤖 Model: gpt-4
+─────────────────────────────
+Test Type: Streaming Throughput
+Concurrent Requests: 10
+Successful Requests: 10
+Failed Requests: 0
+Success Rate: 100.0%
+Average Request Duration: 3.17972095s
+Average Tokens per Second (pure generation): 33.34
+
+🤖 Model: gpt-4.1
+─────────────────────────────
+Test Type: Streaming Throughput
+Concurrent Requests: 10
+Successful Requests: 10
+Failed Requests: 0
+Success Rate: 100.0%
+Average Request Duration: 1.4377782s
+Average Tokens per Second (pure generation): 69.20
+
+🤖 Model: gpt-3.5-turbo
+─────────────────────────────
+Test Type: Streaming Throughput
+Concurrent Requests: 10
+Successful Requests: 10
+Failed Requests: 0
+Success Rate: 100.0%
+Average Request Duration: 677.445995ms
+Average Tokens per Second (pure generation): 169.14
+
+🤖 Model: gemini-2.5-flash-lite
+─────────────────────────────
+Test Type: Streaming Throughput
+Concurrent Requests: 10
+Successful Requests: 10
+Failed Requests: 0
+Success Rate: 100.0%
+Average Request Duration: 278.36022ms
+Average Tokens per Second (pure generation): 324.36

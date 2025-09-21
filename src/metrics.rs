@@ -46,7 +46,6 @@ pub struct LatencyStats {
     pub p99_latency: Duration,
     pub mean_ttfb: Duration,
     pub p95_ttfb: Duration,
-    pub error_rate: f64,
 }
 
 #[allow(dead_code)]
@@ -56,9 +55,7 @@ pub struct StreamingStats {
     pub request_count: usize,
     pub mean_time_to_first_chunk: Duration,
     pub p95_time_to_first_chunk: Duration,
-    pub mean_tokens_per_second: f64,
     pub total_chunks: u32,
-    pub error_rate: f64,
 }
 
 #[derive(Debug)]
@@ -155,7 +152,6 @@ impl MetricsCollector {
             p95_ttfb: Duration::from_millis(
                 *ttfbs.get((ttfbs.len() * 95 / 100).min(ttfbs.len().saturating_sub(1))).unwrap_or(&0)
             ),
-            error_rate: 0.0, // TODO: Track errors properly
         })
     }
 
@@ -186,22 +182,12 @@ impl MetricsCollector {
 
         let p95_ttfc = ttfcs.get(ttfcs.len() * 95 / 100).copied().unwrap_or(Duration::from_millis(0));
 
-        let total_tokens: u32 = model_metrics.iter().map(|m| m.total_tokens).sum();
-        let total_duration: Duration = model_metrics.iter().map(|m| m.total_duration).sum();
-        let mean_tokens_per_second = if total_duration.as_secs_f64() > 0.0 {
-            total_tokens as f64 / total_duration.as_secs_f64()
-        } else {
-            0.0
-        };
-
         Some(StreamingStats {
             model: model.to_string(),
             request_count: model_metrics.len(),
             mean_time_to_first_chunk: mean_ttfc,
             p95_time_to_first_chunk: p95_ttfc,
-            mean_tokens_per_second,
             total_chunks: model_metrics.iter().map(|m| m.chunk_count).sum(),
-            error_rate: 0.0, // TODO: Track errors properly
         })
     }
 

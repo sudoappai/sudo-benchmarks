@@ -1,0 +1,203 @@
+[2m2025-09-21T00:20:32.344454Z[0m [32m INFO[0m [2mbench[0m[2m:[0m Using API base URL: https://sudoapp.dev/api
+[2m2025-09-21T00:20:32.722262Z[0m [32m INFO[0m [2mbench::benchmarks[0m[2m:[0m Loaded 93 supported models
+[2m2025-09-21T00:20:32.722283Z[0m [32m INFO[0m [2mbench::benchmarks[0m[2m:[0m Running latency benchmark on 17 models
+[2m2025-09-21T00:20:32.722322Z[0m [32m INFO[0m [2mbench::benchmarks[0m[2m:[0m Testing model: chatgpt-4o-latest
+[2m2025-09-21T00:20:36.837727Z[0m [32m INFO[0m [2mbench::benchmarks[0m[2m:[0m Testing model: claude-3-5-haiku-20241022
+[2m2025-09-21T00:20:40.068736Z[0m [32m INFO[0m [2mbench::benchmarks[0m[2m:[0m Testing model: claude-opus-4-1-20250805
+[2m2025-09-21T00:22:20.094121Z[0m [31mERROR[0m [2mbench::benchmarks[0m[2m:[0m Warm-up streaming request failed for claude-opus-4-1-20250805: Streaming chat completion failed: 524 <unknown status code> - error code: 524
+[2m2025-09-21T00:24:00.127108Z[0m [31mERROR[0m [2mbench::benchmarks[0m[2m:[0m Warm-up streaming request failed for claude-opus-4-1-20250805: Streaming chat completion failed: 524 <unknown status code> - error code: 524
+[2m2025-09-21T00:25:40.414397Z[0m [31mERROR[0m [2mbench::benchmarks[0m[2m:[0m Streaming request failed for model claude-opus-4-1-20250805: Streaming chat completion failed: 524 <unknown status code> - error code: 524
+[2m2025-09-21T00:25:40.414507Z[0m [31mERROR[0m [2mbench::benchmarks[0m[2m:[0m Streaming request failed for model claude-opus-4-1-20250805: Streaming chat completion failed: 524 <unknown status code> - error code: 524
+[2m2025-09-21T00:25:40.414521Z[0m [32m INFO[0m [2mbench::benchmarks[0m[2m:[0m Testing model: claude-opus-4-20250514
+[2m2025-09-21T00:25:45.847102Z[0m [32m INFO[0m [2mbench::benchmarks[0m[2m:[0m Testing model: deepseek-reasoner
+[2m2025-09-21T00:26:28.497067Z[0m [32m INFO[0m [2mbench::benchmarks[0m[2m:[0m Testing model: gemini-2.5-flash-lite
+[2m2025-09-21T00:26:30.180601Z[0m [32m INFO[0m [2mbench::benchmarks[0m[2m:[0m Testing model: gemini-2.5-flash
+[2m2025-09-21T00:26:31.481911Z[0m [32m INFO[0m [2mbench::benchmarks[0m[2m:[0m Testing model: gemini-2.5-pro
+[2m2025-09-21T00:26:39.533595Z[0m [32m INFO[0m [2mbench::benchmarks[0m[2m:[0m Testing model: gpt-3.5-turbo
+[2m2025-09-21T00:26:41.978270Z[0m [32m INFO[0m [2mbench::benchmarks[0m[2m:[0m Testing model: gpt-4
+[2m2025-09-21T00:26:45.330272Z[0m [32m INFO[0m [2mbench::benchmarks[0m[2m:[0m Testing model: gpt-4.1
+[2m2025-09-21T00:26:47.572606Z[0m [32m INFO[0m [2mbench::benchmarks[0m[2m:[0m Testing model: gpt-4.1-mini
+[2m2025-09-21T00:26:49.334628Z[0m [32m INFO[0m [2mbench::benchmarks[0m[2m:[0m Testing model: gpt-4.1-nano
+[2m2025-09-21T00:26:51.056005Z[0m [32m INFO[0m [2mbench::benchmarks[0m[2m:[0m Testing model: gpt-4o-audio-preview
+[2m2025-09-21T00:26:51.320133Z[0m [31mERROR[0m [2mbench::benchmarks[0m[2m:[0m Warm-up streaming request failed for gpt-4o-audio-preview: Streaming chat completion failed: 400 Bad Request - {"error":{"message":"Error from OpenAI API: {\n  \"error\": {\n    \"message\": \"This model requires that either input content or output modality contain audio.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": \"model\",\n    \"code\": \"invalid_value\"\n  }\n}","type":"api_error"}}
+[2m2025-09-21T00:26:51.546487Z[0m [31mERROR[0m [2mbench::benchmarks[0m[2m:[0m Warm-up streaming request failed for gpt-4o-audio-preview: Streaming chat completion failed: 400 Bad Request - {"error":{"message":"Error from OpenAI API: {\n  \"error\": {\n    \"message\": \"This model requires that either input content or output modality contain audio.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": \"model\",\n    \"code\": \"invalid_value\"\n  }\n}","type":"api_error"}}
+[2m2025-09-21T00:26:51.938658Z[0m [31mERROR[0m [2mbench::benchmarks[0m[2m:[0m Streaming request failed for model gpt-4o-audio-preview: Streaming chat completion failed: 400 Bad Request - {"error":{"message":"Error from OpenAI API: {\n  \"error\": {\n    \"message\": \"This model requires that either input content or output modality contain audio.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": \"model\",\n    \"code\": \"invalid_value\"\n  }\n}","type":"api_error"}}
+[2m2025-09-21T00:26:51.938683Z[0m [31mERROR[0m [2mbench::benchmarks[0m[2m:[0m Streaming request failed for model gpt-4o-audio-preview: Streaming chat completion failed: 400 Bad Request - {"error":{"message":"Error from OpenAI API: {\n  \"error\": {\n    \"message\": \"This model requires that either input content or output modality contain audio.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": \"model\",\n    \"code\": \"invalid_value\"\n  }\n}","type":"api_error"}}
+[2m2025-09-21T00:26:51.938692Z[0m [31mERROR[0m [2mbench::benchmarks[0m[2m:[0m Streaming request failed for model gpt-4o-audio-preview: Streaming chat completion failed: 400 Bad Request - {"error":{"message":"Error from OpenAI API: {\n  \"error\": {\n    \"message\": \"This model requires that either input content or output modality contain audio.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": \"model\",\n    \"code\": \"invalid_value\"\n  }\n}","type":"api_error"}}
+[2m2025-09-21T00:26:51.938698Z[0m [31mERROR[0m [2mbench::benchmarks[0m[2m:[0m Streaming request failed for model gpt-4o-audio-preview: Streaming chat completion failed: 400 Bad Request - {"error":{"message":"Error from OpenAI API: {\n  \"error\": {\n    \"message\": \"This model requires that either input content or output modality contain audio.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": \"model\",\n    \"code\": \"invalid_value\"\n  }\n}","type":"api_error"}}
+[2m2025-09-21T00:26:51.938702Z[0m [31mERROR[0m [2mbench::benchmarks[0m[2m:[0m Streaming request failed for model gpt-4o-audio-preview: Streaming chat completion failed: 400 Bad Request - {"error":{"message":"Error from OpenAI API: {\n  \"error\": {\n    \"message\": \"This model requires that either input content or output modality contain audio.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": \"model\",\n    \"code\": \"invalid_value\"\n  }\n}","type":"api_error"}}
+[2m2025-09-21T00:26:51.938707Z[0m [31mERROR[0m [2mbench::benchmarks[0m[2m:[0m Streaming request failed for model gpt-4o-audio-preview: Streaming chat completion failed: 400 Bad Request - {"error":{"message":"Error from OpenAI API: {\n  \"error\": {\n    \"message\": \"This model requires that either input content or output modality contain audio.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": \"model\",\n    \"code\": \"invalid_value\"\n  }\n}","type":"api_error"}}
+[2m2025-09-21T00:26:51.938710Z[0m [31mERROR[0m [2mbench::benchmarks[0m[2m:[0m Streaming request failed for model gpt-4o-audio-preview: Streaming chat completion failed: 400 Bad Request - {"error":{"message":"Error from OpenAI API: {\n  \"error\": {\n    \"message\": \"This model requires that either input content or output modality contain audio.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": \"model\",\n    \"code\": \"invalid_value\"\n  }\n}","type":"api_error"}}
+[2m2025-09-21T00:26:51.938714Z[0m [31mERROR[0m [2mbench::benchmarks[0m[2m:[0m Streaming request failed for model gpt-4o-audio-preview: Streaming chat completion failed: 400 Bad Request - {"error":{"message":"Error from OpenAI API: {\n  \"error\": {\n    \"message\": \"This model requires that either input content or output modality contain audio.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": \"model\",\n    \"code\": \"invalid_value\"\n  }\n}","type":"api_error"}}
+[2m2025-09-21T00:26:51.938719Z[0m [31mERROR[0m [2mbench::benchmarks[0m[2m:[0m Streaming request failed for model gpt-4o-audio-preview: Streaming chat completion failed: 400 Bad Request - {"error":{"message":"Error from OpenAI API: {\n  \"error\": {\n    \"message\": \"This model requires that either input content or output modality contain audio.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": \"model\",\n    \"code\": \"invalid_value\"\n  }\n}","type":"api_error"}}
+[2m2025-09-21T00:26:51.938722Z[0m [31mERROR[0m [2mbench::benchmarks[0m[2m:[0m Streaming request failed for model gpt-4o-audio-preview: Streaming chat completion failed: 400 Bad Request - {"error":{"message":"Error from OpenAI API: {\n  \"error\": {\n    \"message\": \"This model requires that either input content or output modality contain audio.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": \"model\",\n    \"code\": \"invalid_value\"\n  }\n}","type":"api_error"}}
+[2m2025-09-21T00:26:51.938730Z[0m [31mERROR[0m [2mbench::benchmarks[0m[2m:[0m Failed to benchmark gpt-4o-audio-preview: No successful streaming requests for model gpt-4o-audio-preview
+[2m2025-09-21T00:26:51.938734Z[0m [32m INFO[0m [2mbench::benchmarks[0m[2m:[0m Testing model: gpt-4o-mini-audio-preview
+[2m2025-09-21T00:26:52.207589Z[0m [31mERROR[0m [2mbench::benchmarks[0m[2m:[0m Warm-up streaming request failed for gpt-4o-mini-audio-preview: Streaming chat completion failed: 400 Bad Request - {"error":{"message":"Error from OpenAI API: {\n  \"error\": {\n    \"message\": \"This model requires that either input content or output modality contain audio.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": \"model\",\n    \"code\": \"invalid_value\"\n  }\n}","type":"api_error"}}
+[2m2025-09-21T00:26:52.516730Z[0m [31mERROR[0m [2mbench::benchmarks[0m[2m:[0m Warm-up streaming request failed for gpt-4o-mini-audio-preview: Streaming chat completion failed: 400 Bad Request - {"error":{"message":"Error from OpenAI API: {\n  \"error\": {\n    \"message\": \"This model requires that either input content or output modality contain audio.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": \"model\",\n    \"code\": \"invalid_value\"\n  }\n}","type":"api_error"}}
+[2m2025-09-21T00:26:53.340234Z[0m [31mERROR[0m [2mbench::benchmarks[0m[2m:[0m Streaming request failed for model gpt-4o-mini-audio-preview: Streaming chat completion failed: 400 Bad Request - {"error":{"message":"Error from OpenAI API: {\n  \"error\": {\n    \"message\": \"This model requires that either input content or output modality contain audio.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": \"model\",\n    \"code\": \"invalid_value\"\n  }\n}","type":"api_error"}}
+[2m2025-09-21T00:26:53.340256Z[0m [31mERROR[0m [2mbench::benchmarks[0m[2m:[0m Streaming request failed for model gpt-4o-mini-audio-preview: Streaming chat completion failed: 400 Bad Request - {"error":{"message":"Error from OpenAI API: {\n  \"error\": {\n    \"message\": \"This model requires that either input content or output modality contain audio.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": \"model\",\n    \"code\": \"invalid_value\"\n  }\n}","type":"api_error"}}
+[2m2025-09-21T00:26:53.340291Z[0m [31mERROR[0m [2mbench::benchmarks[0m[2m:[0m Streaming request failed for model gpt-4o-mini-audio-preview: Streaming chat completion failed: 400 Bad Request - {"error":{"message":"Error from OpenAI API: {\n  \"error\": {\n    \"message\": \"This model requires that either input content or output modality contain audio.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": \"model\",\n    \"code\": \"invalid_value\"\n  }\n}","type":"api_error"}}
+[2m2025-09-21T00:26:53.340300Z[0m [31mERROR[0m [2mbench::benchmarks[0m[2m:[0m Streaming request failed for model gpt-4o-mini-audio-preview: Streaming chat completion failed: 400 Bad Request - {"error":{"message":"Error from OpenAI API: {\n  \"error\": {\n    \"message\": \"This model requires that either input content or output modality contain audio.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": \"model\",\n    \"code\": \"invalid_value\"\n  }\n}","type":"api_error"}}
+[2m2025-09-21T00:26:53.340305Z[0m [31mERROR[0m [2mbench::benchmarks[0m[2m:[0m Streaming request failed for model gpt-4o-mini-audio-preview: Streaming chat completion failed: 400 Bad Request - {"error":{"message":"Error from OpenAI API: {\n  \"error\": {\n    \"message\": \"This model requires that either input content or output modality contain audio.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": \"model\",\n    \"code\": \"invalid_value\"\n  }\n}","type":"api_error"}}
+[2m2025-09-21T00:26:53.340311Z[0m [31mERROR[0m [2mbench::benchmarks[0m[2m:[0m Streaming request failed for model gpt-4o-mini-audio-preview: Streaming chat completion failed: 400 Bad Request - {"error":{"message":"Error from OpenAI API: {\n  \"error\": {\n    \"message\": \"This model requires that either input content or output modality contain audio.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": \"model\",\n    \"code\": \"invalid_value\"\n  }\n}","type":"api_error"}}
+[2m2025-09-21T00:26:53.340316Z[0m [31mERROR[0m [2mbench::benchmarks[0m[2m:[0m Streaming request failed for model gpt-4o-mini-audio-preview: Streaming chat completion failed: 400 Bad Request - {"error":{"message":"Error from OpenAI API: {\n  \"error\": {\n    \"message\": \"This model requires that either input content or output modality contain audio.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": \"model\",\n    \"code\": \"invalid_value\"\n  }\n}","type":"api_error"}}
+[2m2025-09-21T00:26:53.340321Z[0m [31mERROR[0m [2mbench::benchmarks[0m[2m:[0m Streaming request failed for model gpt-4o-mini-audio-preview: Streaming chat completion failed: 400 Bad Request - {"error":{"message":"Error from OpenAI API: {\n  \"error\": {\n    \"message\": \"This model requires that either input content or output modality contain audio.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": \"model\",\n    \"code\": \"invalid_value\"\n  }\n}","type":"api_error"}}
+[2m2025-09-21T00:26:53.340327Z[0m [31mERROR[0m [2mbench::benchmarks[0m[2m:[0m Streaming request failed for model gpt-4o-mini-audio-preview: Streaming chat completion failed: 400 Bad Request - {"error":{"message":"Error from OpenAI API: {\n  \"error\": {\n    \"message\": \"This model requires that either input content or output modality contain audio.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": \"model\",\n    \"code\": \"invalid_value\"\n  }\n}","type":"api_error"}}
+[2m2025-09-21T00:26:53.340332Z[0m [31mERROR[0m [2mbench::benchmarks[0m[2m:[0m Streaming request failed for model gpt-4o-mini-audio-preview: Streaming chat completion failed: 400 Bad Request - {"error":{"message":"Error from OpenAI API: {\n  \"error\": {\n    \"message\": \"This model requires that either input content or output modality contain audio.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": \"model\",\n    \"code\": \"invalid_value\"\n  }\n}","type":"api_error"}}
+[2m2025-09-21T00:26:53.340343Z[0m [31mERROR[0m [2mbench::benchmarks[0m[2m:[0m Failed to benchmark gpt-4o-mini-audio-preview: No successful streaming requests for model gpt-4o-mini-audio-preview
+[2m2025-09-21T00:26:53.340347Z[0m [32m INFO[0m [2mbench::benchmarks[0m[2m:[0m Testing model: gpt-4o-mini-search-preview
+[2m2025-09-21T00:27:03.898557Z[0m [32m INFO[0m [2mbench::benchmarks[0m[2m:[0m Testing model: gpt-4o-search-preview
+
+Streaming Latency Benchmark Results
+============================================================
+
+🤖 Model: gemini-2.5-flash-lite
+─────────────────────────────
+StreamingStats {
+    model: "gemini-2.5-flash-lite",
+    request_count: 10,
+    mean_time_to_first_chunk: 455.873449ms,
+    p95_time_to_first_chunk: 681.666916ms,
+    total_chunks: 30,
+}
+
+🤖 Model: gpt-4.1-nano
+─────────────────────────────
+StreamingStats {
+    model: "gpt-4.1-nano",
+    request_count: 10,
+    mean_time_to_first_chunk: 402.944275ms,
+    p95_time_to_first_chunk: 515.101916ms,
+    total_chunks: 120,
+}
+
+🤖 Model: gpt-4
+─────────────────────────────
+StreamingStats {
+    model: "gpt-4",
+    request_count: 10,
+    mean_time_to_first_chunk: 753.596145ms,
+    p95_time_to_first_chunk: 1.204294667s,
+    total_chunks: 120,
+}
+
+🤖 Model: gemini-2.5-flash
+─────────────────────────────
+StreamingStats {
+    model: "gemini-2.5-flash",
+    request_count: 10,
+    mean_time_to_first_chunk: 434.538933ms,
+    p95_time_to_first_chunk: 499.642083ms,
+    total_chunks: 10,
+}
+
+🤖 Model: gemini-2.5-pro
+─────────────────────────────
+StreamingStats {
+    model: "gemini-2.5-pro",
+    request_count: 10,
+    mean_time_to_first_chunk: 3.621780945s,
+    p95_time_to_first_chunk: 5.888131333s,
+    total_chunks: 20,
+}
+
+🤖 Model: gpt-4.1
+─────────────────────────────
+StreamingStats {
+    model: "gpt-4.1",
+    request_count: 10,
+    mean_time_to_first_chunk: 593.114683ms,
+    p95_time_to_first_chunk: 885.401834ms,
+    total_chunks: 120,
+}
+
+🤖 Model: claude-3-5-haiku-20241022
+─────────────────────────────
+StreamingStats {
+    model: "claude-3-5-haiku-20241022",
+    request_count: 10,
+    mean_time_to_first_chunk: 672.628374ms,
+    p95_time_to_first_chunk: 1.412972625s,
+    total_chunks: 58,
+}
+
+🤖 Model: gpt-4.1-mini
+─────────────────────────────
+StreamingStats {
+    model: "gpt-4.1-mini",
+    request_count: 10,
+    mean_time_to_first_chunk: 476.220287ms,
+    p95_time_to_first_chunk: 616.378125ms,
+    total_chunks: 120,
+}
+
+🤖 Model: chatgpt-4o-latest
+─────────────────────────────
+StreamingStats {
+    model: "chatgpt-4o-latest",
+    request_count: 10,
+    mean_time_to_first_chunk: 1.249943874s,
+    p95_time_to_first_chunk: 1.576632916s,
+    total_chunks: 120,
+}
+
+🤖 Model: claude-opus-4-20250514
+─────────────────────────────
+StreamingStats {
+    model: "claude-opus-4-20250514",
+    request_count: 10,
+    mean_time_to_first_chunk: 1.644753595s,
+    p95_time_to_first_chunk: 1.781724s,
+    total_chunks: 47,
+}
+
+🤖 Model: deepseek-reasoner
+─────────────────────────────
+StreamingStats {
+    model: "deepseek-reasoner",
+    request_count: 10,
+    mean_time_to_first_chunk: 2.845068662s,
+    p95_time_to_first_chunk: 3.156510875s,
+    total_chunks: 2142,
+}
+
+🤖 Model: claude-opus-4-1-20250805
+─────────────────────────────
+StreamingStats {
+    model: "claude-opus-4-1-20250805",
+    request_count: 8,
+    mean_time_to_first_chunk: 9.113102239s,
+    p95_time_to_first_chunk: 35.95488075s,
+    total_chunks: 32,
+}
+
+🤖 Model: gpt-4o-mini-search-preview
+─────────────────────────────
+StreamingStats {
+    model: "gpt-4o-mini-search-preview",
+    request_count: 10,
+    mean_time_to_first_chunk: 2.080392775s,
+    p95_time_to_first_chunk: 2.841153834s,
+    total_chunks: 1304,
+}
+
+🤖 Model: gpt-3.5-turbo
+─────────────────────────────
+StreamingStats {
+    model: "gpt-3.5-turbo",
+    request_count: 10,
+    mean_time_to_first_chunk: 924.997774ms,
+    p95_time_to_first_chunk: 1.257398333s,
+    total_chunks: 120,
+}
+
+🤖 Model: gpt-4o-search-preview
+─────────────────────────────
+StreamingStats {
+    model: "gpt-4o-search-preview",
+    request_count: 10,
+    mean_time_to_first_chunk: 2.26033312s,
+    p95_time_to_first_chunk: 2.768032666s,
+    total_chunks: 2459,
+}
